@@ -169,3 +169,31 @@
     opacity: 0;
   }
 }
+
+/* Strip reveal — instant-camera animation */
+@keyframes reveal-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes reveal-pop {
+  0% { opacity: 0; transform: scale(0.85) translateY(12px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes reveal-flash-blink {
+  0% { opacity: 0; }
+  15% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes reveal-screen-flash {
+  0% { opacity: 0; }
+  12% { opacity: 0.9; }
+  100% { opacity: 0; }
+}
+
+@keyframes reveal-eject {
+  from { transform: rotateX(46deg) translateY(-104%); }
+  to { transform: rotateX(46deg) translateY(-4%); }
+}

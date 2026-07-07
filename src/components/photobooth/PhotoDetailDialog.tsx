@@ -53,7 +53,8 @@ export default function PhotoDetailDialog({ photo, onClose }: Props) {
   const download = () => {
     const a = document.createElement("a");
     a.href = photo.dataUrl;
-    a.download = `framio-${photo.id}.png`;
+    const ext = photo.dataUrl.startsWith("data:image/jpeg") ? "jpg" : "png";
+    a.download = `framio-${photo.id}.${ext}`;
     a.click();
   };
 

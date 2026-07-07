@@ -46,6 +46,7 @@ export default function CameraView({
   const [stripShots, setStripShots] = useState<string[]>([]);
   const [stripFrameId, setStripFrameId] = useState(STRIP_FRAMES[0].id);
   const [isComposing, setIsComposing] = useState(false);
+  const [reveal, setReveal] = useState<{ dataUrl: string; frameId: string } | null>(null);
 
   const filterCSS = filterToCSS(filter);
   const mirrored = facingMode === "user";
@@ -109,7 +110,7 @@ export default function CameraView({
   /** Capture a frame with the theme filter baked into the pixels. */
   const captureFrame = useCallback((): string | null => {
     if (asciiSettings.enabled && asciiCanvasRef.current) {
-      return asciiCanvasRef.current.toDataURL("image/png");
+      return asciiCanvasRef.current.toDataURL("image/jpeg", 0.92);
     }
     const video = webcamRef.current?.video;
     if (!video || video.readyState < 2) return null;
@@ -126,7 +127,7 @@ export default function CameraView({
       ctx.scale(-1, 1);
     }
     ctx.drawImage(video, 0, 0);
-    return canvas.toDataURL("image/png");
+    return canvas.toDataURL("image/jpeg", 0.92);
   }, [asciiSettings.enabled, filterCSS, mirrored]);
 
   const finishStrip = useCallback(
@@ -136,12 +137,12 @@ export default function CameraView({
       setIsComposing(true);
       composeStrip(shots, frame)
         .then((dataUrl) => {
-          onStripComplete?.(dataUrl, frame.id);
           setStripShots([]);
+          setReveal({ dataUrl, frameId: frame.id }); // camera reveal animation
         })
         .finally(() => setIsComposing(false));
     },
-    [stripFrameId, onStripComplete]
+    [stripFrameId]
   );
 
   const capture = useCallback(() => {
@@ -167,6 +168,16 @@ export default function CameraView({
     isComposing,
     finishStrip,
   ]);
+
+  // Reveal animation: flash -> eject -> then deliver the strip (details dialog)
+  useEffect(() => {
+    if (!reveal) return;
+    const t = setTimeout(() => {
+      onStripComplete?.(reveal.dataUrl, reveal.frameId);
+      setReveal(null);
+    }, 3200);
+    return () => clearTimeout(t);
+  }, [reveal, onStripComplete]);
 
   const startCountdown = useCallback(() => {
     if (countdown !== null) return;
@@ -305,6 +316,46 @@ export default function CameraView({
           <span className="text-white text-sm font-medium animate-pulse">
             Creating your strip…
           </span>
+        </div>
+      )}
+
+      {/* Strip reveal — instant camera prints the real strip (Figma 27:289) */}
+      {reveal && (
+        <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/75 [animation:reveal-fade-in_0.25s_ease-out_both]">
+          {/* full-screen flash */}
+          <div className="absolute inset-0 bg-white pointer-events-none [animation:reveal-screen-flash_0.5s_ease-out_0.5s_both]" />
+          <div className="scale-[0.5] sm:scale-[0.65] lg:scale-[0.85] origin-center">
+            <div className="relative w-[365px] h-[600px] [animation:reveal-pop_0.35s_ease-out_both]">
+              {/* camera body — drop your export at public/camera.png */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/camera.png"
+                alt=""
+                className="absolute left-0 top-0 w-[365px] h-[387px] z-10 select-none pointer-events-none"
+                draggable={false}
+              />
+              {/* flashpoint blink + glow (Figma "Flashpoint" 292,117) */}
+              <div className="absolute left-[292px] top-[117px] w-[11px] h-[10px] bg-white z-20 [animation:reveal-flash-blink_0.5s_ease-out_0.5s_both]" />
+              <div className="absolute left-[262px] top-[87px] w-[70px] h-[70px] rounded-full bg-white blur-xl z-20 [animation:reveal-flash-blink_0.5s_ease-out_0.5s_both]" />
+              {/* the real strip ejects below the slot in 3D perspective (Figma 29:384) */}
+              <div
+                className="absolute left-[31px] top-[335px] w-[301px] z-20"
+                style={{
+                  perspective: "700px",
+                  // clip only the top edge (hides the not-yet-ejected part);
+                  // sides/bottom stay open so the perspective flare isn't cut
+                  clipPath: "inset(0px -300px -600px -300px)",
+                }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={reveal.dataUrl}
+                  alt="Photo strip"
+                  className="w-full origin-top shadow-[0_24px_48px_rgba(0,0,0,0.55)] [animation:reveal-eject_1.6s_cubic-bezier(0.22,1,0.36,1)_0.95s_both]"
+                />
+              </div>
+            </div>
+          </div>
         </div>
       )}
 

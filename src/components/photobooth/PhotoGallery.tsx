@@ -15,7 +15,8 @@ export default function PhotoGallery({ onPhotoClick }: Props) {
   const downloadPhoto = (dataUrl: string, id: string) => {
     const a = document.createElement("a");
     a.href = dataUrl;
-    a.download = `framio-${id}.png`;
+    const ext = dataUrl.startsWith("data:image/jpeg") ? "jpg" : "png";
+    a.download = `framio-${id}.${ext}`;
     a.click();
   };
 

@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
+import { idbStorage } from "@/lib/idbStorage";
 import { Theme, CapturedPhoto, AsciiSettings } from "@/types";
 import { DEFAULT_THEMES } from "@/lib/themes";
 import { DEFAULT_ASCII_SETTINGS } from "@/lib/ascii";
@@ -73,6 +74,7 @@ export const usePhotoboothStore = create<PhotoboothStore>()(
     }),
     {
       name: "photoboost-storage",
+      storage: createJSONStorage(() => idbStorage),
       partialize: (state) => ({
         themes: state.themes,
         photos: state.photos,

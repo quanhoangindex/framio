@@ -139,5 +139,5 @@ export async function composeStrip(
   });
   ctx.fillText(date, STRIP_WIDTH / 2, footerY);
 
-  return canvas.toDataURL("image/png");
+  return canvas.toDataURL("image/jpeg", 0.92);
 }
