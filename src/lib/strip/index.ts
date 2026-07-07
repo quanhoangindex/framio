@@ -81,7 +81,7 @@ function drawCover(
 /**
  * Compose 3 captured photos into a framed vertical strip.
  * `filterCSS` (e.g. from filterToCSS) is baked into the photos via ctx.filter.
- * Returns a PNG data URL.
+ * Returns a JPEG data URL.
  */
 export async function composeStrip(
   dataUrls: string[],

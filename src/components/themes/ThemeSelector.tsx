@@ -57,7 +57,7 @@ export default function ThemeSelector({ showFavouritesOnly = false }: Props) {
                   : "bg-transparent border-[rgba(45,45,45,0.4)] hover:bg-[rgba(255,255,255,0.03)]"
               )}
             >
-              {/* Swatch — per-theme gradient + centered squircle */}
+              {/* Swatch — per-theme gradient + reversed-gradient dot */}
               <div
                 className="w-full aspect-square rounded-[12px] border flex items-center justify-center"
                 style={{

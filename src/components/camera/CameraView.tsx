@@ -334,7 +334,7 @@ export default function CameraView({
           <div className="absolute inset-0 bg-white pointer-events-none [animation:reveal-screen-flash_0.5s_ease-out_0.5s_both]" />
           <div className="scale-[0.5] sm:scale-[0.65] lg:scale-[0.85] origin-center">
             <div className="relative w-[365px] h-[516px] [animation:reveal-pop_0.35s_ease-out_both]">
-              {/* camera body — drop your export at public/camera.png */}
+              {/* camera body — public/camera.png */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/camera.png"
@@ -342,7 +342,7 @@ export default function CameraView({
                 className="absolute left-0 top-0 w-[365px] h-auto z-10 select-none pointer-events-none"
                 draggable={false}
               />
-              {/* flashpoint blink + glow (Figma "Flashpoint" 292,117) */}
+              {/* flashpoint blink + glow */}
               <div className="absolute left-[292px] top-[33px] w-[11px] h-[10px] bg-white z-20 [animation:reveal-flash-blink_0.5s_ease-out_0.5s_both]" />
               <div className="absolute left-[262px] top-[3px] w-[70px] h-[70px] rounded-full bg-white blur-xl z-20 [animation:reveal-flash-blink_0.5s_ease-out_0.5s_both]" />
               {/* the real strip ejects below the slot in 3D perspective (Figma 29:384) */}

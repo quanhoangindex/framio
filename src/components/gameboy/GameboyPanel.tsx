@@ -6,7 +6,7 @@ import { GAMEBOY_PALETTES } from "@/lib/gameboy";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
-import { Gamepad2, RotateCcw } from "lucide-react";
+import { RotateCcw } from "lucide-react";
 
 function Section({
   title,
@@ -75,20 +75,19 @@ export default function GameboyPanel() {
 
   return (
     <div className="flex flex-col gap-3">
-      {/* Enable toggle */}
-      <div className="flex items-center justify-between rounded-xl border border-border bg-card p-3">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-primary/20 bg-primary/10">
-            <Gamepad2 className="h-3.5 w-3.5 text-primary" />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-[13px] font-medium leading-none">
-              Game Boy Mode
-            </span>
-            <span className="mt-1 text-[11px] leading-none text-muted-foreground">
-              4-tone dithered pixel camera
-            </span>
-          </div>
+      {/* Enable toggle (Figma 34:421) */}
+      <div className="flex items-center justify-between rounded-[18px] border-[0.8px] border-[rgba(255,255,255,0.08)] bg-[#070707] p-[12.8px]">
+        <div className="flex items-center gap-[10px]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/thumb-gameboy.png"
+            alt=""
+            className="h-7 w-7 rounded-[12px] border border-[#1a1a1a] object-cover shadow-[0px_0px_7.3px_0px_rgba(216,216,216,0.25)] select-none"
+            draggable={false}
+          />
+          <span className="text-[14px] font-medium leading-[13px] text-[#ebebeb]">
+            Game Boy Mode
+          </span>
         </div>
         <Switch
           checked={s.enabled}
