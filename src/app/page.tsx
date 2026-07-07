@@ -10,6 +10,13 @@ import AsciiPanel from "@/components/ascii/AsciiPanel";
 import GameboyPanel from "@/components/gameboy/GameboyPanel";
 import PhotoGallery from "@/components/photobooth/PhotoGallery";
 import PhotoDetailDialog from "@/components/photobooth/PhotoDetailDialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Images } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Home() {
@@ -17,6 +24,7 @@ export default function Home() {
     usePhotoboothStore();
   const activeTheme = themes.find((t) => t.id === activeThemeId) ?? themes[0];
   const [detailPhoto, setDetailPhoto] = useState<CapturedPhoto | null>(null);
+  const [galleryOpen, setGalleryOpen] = useState(false);
 
   const handleCapture = (dataUrl: string) => {
     const themeId = asciiSettings.enabled
@@ -41,11 +49,19 @@ export default function Home() {
         {/* Framio logo (Figma 10:227) */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/logo.png" alt="Framio" className="h-7 w-auto select-none" draggable={false} />
-        {photos.length > 0 && (
-          <span className="text-xs text-muted-foreground tabular-nums">
-            {photos.length} {photos.length === 1 ? "photo" : "photos"}
-          </span>
-        )}
+        <button
+          onClick={() => setGalleryOpen(true)}
+          className="flex items-center gap-1.5 h-8 px-3 rounded-full border-[0.8px] border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.06)] text-[13px] font-medium text-[#ebebeb] hover:bg-[rgba(255,255,255,0.12)] active:scale-95 transition-all"
+          title="Open gallery"
+        >
+          <Images className="w-3.5 h-3.5" />
+          Gallery
+          {photos.length > 0 && (
+            <span className="inline-flex items-center justify-center min-w-[15px] h-[15px] px-[4px] text-[10px] leading-[15px] font-semibold bg-[#fdfeff] text-[#2f2f2f] rounded-full">
+              {photos.length > 99 ? "99+" : photos.length}
+            </span>
+          )}
+        </button>
       </header>
 
       {/* Main layout */}
@@ -98,17 +114,6 @@ export default function Home() {
               >
                 Favourites
               </TabsTrigger>
-              <TabsTrigger
-                value="gallery"
-                className="flex-1 h-[36px]! rounded-t-[8px]! rounded-b-none! text-[13px] font-medium text-[#636363]! hover:text-[#ebebeb]! data-active:text-[#ebebeb]! data-active:bg-[rgba(255,255,255,0.1)]! data-active:border-transparent! after:bg-[#ebebeb]! after:bottom-[-0.8px]! after:h-[2px]! px-[14.8px] gap-1.5"
-              >
-                Gallery
-                {photos.length > 0 && (
-                  <span className="inline-flex items-center justify-center min-w-[15px] h-[15px] px-[4px] text-[10px] leading-[15px] font-semibold bg-[#fdfeff] text-[#2f2f2f] rounded-full">
-                    {photos.length > 99 ? "99+" : photos.length}
-                  </span>
-                )}
-              </TabsTrigger>
             </TabsList>
 
             <div className="flex-1 overflow-y-auto p-4">
@@ -124,13 +129,29 @@ export default function Home() {
               <TabsContent value="favourites" className="mt-0">
                 <ThemeSelector showFavouritesOnly />
               </TabsContent>
-              <TabsContent value="gallery" className="mt-0">
-                <PhotoGallery onPhotoClick={setDetailPhoto} />
-              </TabsContent>
             </div>
           </Tabs>
         </aside>
       </main>
+
+      {/* Gallery dialog */}
+      <Dialog open={galleryOpen} onOpenChange={setGalleryOpen}>
+        <DialogContent className="sm:max-w-2xl max-h-[85vh] grid-rows-[auto_1fr]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              Gallery
+              {photos.length > 0 && (
+                <span className="inline-flex items-center justify-center min-w-[15px] h-[15px] px-[4px] text-[10px] leading-[15px] font-semibold bg-[#fdfeff] text-[#2f2f2f] rounded-full">
+                  {photos.length > 99 ? "99+" : photos.length}
+                </span>
+              )}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="overflow-y-auto -mx-1 px-1">
+            <PhotoGallery onPhotoClick={setDetailPhoto} />
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <PhotoDetailDialog
         photo={detailPhoto}
