@@ -34,6 +34,18 @@ export type CapturedPhoto = {
   capturedAt: Date;
 };
 
+export type GameboyDither = "bayer" | "diffusion" | "none";
+
+export type GameboySettings = {
+  enabled: boolean;
+  resolution: number; // horizontal pixel count (160 = authentic Game Boy)
+  paletteId: string;
+  dither: GameboyDither;
+  brightness: number; // -100–100
+  contrast: number; // 0–200 (100 = normal)
+  invert: boolean;
+};
+
 export type AsciiCharset = "full" | "minimal" | "blocks" | "simple" | "custom";
 export type AsciiColorMode = "mono" | "color";
 

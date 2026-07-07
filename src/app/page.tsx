@@ -7,18 +7,24 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CameraView from "@/components/camera/CameraView";
 import ThemeSelector from "@/components/themes/ThemeSelector";
 import AsciiPanel from "@/components/ascii/AsciiPanel";
+import GameboyPanel from "@/components/gameboy/GameboyPanel";
 import PhotoGallery from "@/components/photobooth/PhotoGallery";
 import PhotoDetailDialog from "@/components/photobooth/PhotoDetailDialog";
 import { toast } from "sonner";
 
 export default function Home() {
-  const { themes, activeThemeId, asciiSettings, addPhoto, photos } =
+  const { themes, activeThemeId, asciiSettings, gameboySettings, addPhoto, photos } =
     usePhotoboothStore();
   const activeTheme = themes.find((t) => t.id === activeThemeId) ?? themes[0];
   const [detailPhoto, setDetailPhoto] = useState<CapturedPhoto | null>(null);
 
   const handleCapture = (dataUrl: string) => {
-    addPhoto(dataUrl, asciiSettings.enabled ? "ascii" : activeThemeId);
+    const themeId = asciiSettings.enabled
+      ? "ascii"
+      : gameboySettings.enabled
+        ? "gameboy"
+        : activeThemeId;
+    addPhoto(dataUrl, themeId);
     toast.success("Photo captured!");
   };
 
@@ -49,6 +55,7 @@ export default function Home() {
           <CameraView
             filter={activeTheme.filter}
             asciiSettings={asciiSettings}
+            gameboySettings={gameboySettings}
             onCapture={handleCapture}
             onStripComplete={handleStripComplete}
           />
@@ -77,6 +84,15 @@ export default function Home() {
                 )}
               </TabsTrigger>
               <TabsTrigger
+                value="gameboy"
+                className="flex-1 h-[36px]! rounded-t-[8px]! rounded-b-none! text-[13px] font-medium text-[#636363]! hover:text-[#ebebeb]! data-active:text-[#ebebeb]! data-active:bg-[rgba(255,255,255,0.1)]! data-active:border-transparent! after:bg-[#ebebeb]! after:bottom-[-0.8px]! after:h-[2px]! px-[14.8px] gap-1.5"
+              >
+                GB
+                {gameboySettings.enabled && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                )}
+              </TabsTrigger>
+              <TabsTrigger
                 value="favourites"
                 className="flex-1 h-[36px]! rounded-t-[8px]! rounded-b-none! text-[13px] font-medium text-[#636363]! hover:text-[#ebebeb]! data-active:text-[#ebebeb]! data-active:bg-[rgba(255,255,255,0.1)]! data-active:border-transparent! after:bg-[#ebebeb]! after:bottom-[-0.8px]! after:h-[2px]! px-[8.8px]"
               >
@@ -101,6 +117,9 @@ export default function Home() {
               </TabsContent>
               <TabsContent value="ascii" className="mt-0">
                 <AsciiPanel />
+              </TabsContent>
+              <TabsContent value="gameboy" className="mt-0">
+                <GameboyPanel />
               </TabsContent>
               <TabsContent value="favourites" className="mt-0">
                 <ThemeSelector showFavouritesOnly />

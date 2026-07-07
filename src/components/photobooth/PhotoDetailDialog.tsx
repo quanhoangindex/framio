@@ -26,10 +26,11 @@ export default function PhotoDetailDialog({ photo, onClose }: Props) {
 
   const isStrip = photo.themeId === "strip";
   const isAscii = photo.themeId === "ascii";
+  const isGameboy = photo.themeId === "gameboy";
   const frame = isStrip
     ? STRIP_FRAMES.find((f) => f.id === photo.frameId) ?? STRIP_FRAMES[0]
     : undefined;
-  const theme = !isStrip && !isAscii
+  const theme = !isStrip && !isAscii && !isGameboy
     ? themes.find((t) => t.id === photo.themeId)
     : undefined;
 
@@ -38,7 +39,9 @@ export default function PhotoDetailDialog({ photo, onClose }: Props) {
     ? `${frame?.name} frame`
     : isAscii
       ? "ASCII mode"
-      : theme?.name ?? "Original";
+      : isGameboy
+        ? "Game Boy mode"
+        : theme?.name ?? "Original";
 
   const captured = new Date(photo.capturedAt);
   const capturedLabel = captured.toLocaleString(undefined, {

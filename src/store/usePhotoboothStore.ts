@@ -1,9 +1,10 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { idbStorage } from "@/lib/idbStorage";
-import { Theme, CapturedPhoto, AsciiSettings } from "@/types";
+import { Theme, CapturedPhoto, AsciiSettings, GameboySettings } from "@/types";
 import { DEFAULT_THEMES } from "@/lib/themes";
 import { DEFAULT_ASCII_SETTINGS } from "@/lib/ascii";
+import { DEFAULT_GAMEBOY_SETTINGS } from "@/lib/gameboy";
 
 type PhotoboothStore = {
   // Themes
@@ -16,6 +17,11 @@ type PhotoboothStore = {
   asciiSettings: AsciiSettings;
   updateAsciiSettings: (patch: Partial<AsciiSettings>) => void;
   resetAsciiSettings: () => void;
+
+  // Game Boy effect
+  gameboySettings: GameboySettings;
+  updateGameboySettings: (patch: Partial<GameboySettings>) => void;
+  resetGameboySettings: () => void;
 
   // Photos
   photos: CapturedPhoto[];
@@ -46,9 +52,28 @@ export const usePhotoboothStore = create<PhotoboothStore>()(
       updateAsciiSettings: (patch) =>
         set((state) => ({
           asciiSettings: { ...state.asciiSettings, ...patch },
+          // effects are mutually exclusive
+          ...(patch.enabled
+            ? { gameboySettings: { ...state.gameboySettings, enabled: false } }
+            : {}),
         })),
 
       resetAsciiSettings: () => set({ asciiSettings: DEFAULT_ASCII_SETTINGS }),
+
+      // ─── Game Boy effect ───────────────────────────────────
+      gameboySettings: DEFAULT_GAMEBOY_SETTINGS,
+
+      updateGameboySettings: (patch) =>
+        set((state) => ({
+          gameboySettings: { ...state.gameboySettings, ...patch },
+          // effects are mutually exclusive
+          ...(patch.enabled
+            ? { asciiSettings: { ...state.asciiSettings, enabled: false } }
+            : {}),
+        })),
+
+      resetGameboySettings: () =>
+        set({ gameboySettings: DEFAULT_GAMEBOY_SETTINGS }),
 
       // ─── Photos ────────────────────────────────────────────
       photos: [],
@@ -79,6 +104,7 @@ export const usePhotoboothStore = create<PhotoboothStore>()(
         themes: state.themes,
         photos: state.photos,
         asciiSettings: state.asciiSettings,
+        gameboySettings: state.gameboySettings,
       }),
     }
   )

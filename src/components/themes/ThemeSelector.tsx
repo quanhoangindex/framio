@@ -10,8 +10,9 @@ type Props = {
 };
 
 export default function ThemeSelector({ showFavouritesOnly = false }: Props) {
-  const { themes, activeThemeId, setActiveTheme, toggleFavourite, asciiSettings } =
+  const { themes, activeThemeId, setActiveTheme, toggleFavourite, asciiSettings, gameboySettings } =
     usePhotoboothStore();
+  const effectActive = asciiSettings.enabled || gameboySettings.enabled;
 
   const displayed = showFavouritesOnly
     ? themes.filter((t) => t.favourite)
@@ -30,15 +31,15 @@ export default function ThemeSelector({ showFavouritesOnly = false }: Props) {
 
   return (
     <div className="flex flex-col gap-3">
-      {asciiSettings.enabled && (
+      {effectActive && (
         <p className="rounded-lg border border-border bg-muted/50 px-2.5 py-2 text-[11px] leading-relaxed text-muted-foreground">
-          Themes are paused while ASCII Mode is active.
+          Themes are paused while {asciiSettings.enabled ? "ASCII" : "Game Boy"} Mode is active.
         </p>
       )}
       <div
         className={cn(
           "grid grid-cols-3 gap-2",
-          asciiSettings.enabled && "pointer-events-none opacity-40"
+          effectActive && "pointer-events-none opacity-40"
         )}
       >
       {displayed.map((theme) => {

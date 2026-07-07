@@ -4,8 +4,9 @@ import { useRef, useCallback, useEffect, useState } from "react";
 import Webcam from "react-webcam";
 import { filterToCSS } from "@/lib/themes";
 import { renderAsciiFrame } from "@/lib/ascii";
+import { renderGameboyFrame } from "@/lib/gameboy";
 import { composeStrip, STRIP_FRAMES, STRIP_PHOTO_COUNT } from "@/lib/strip";
-import { AsciiSettings, ThemeFilter } from "@/types";
+import { AsciiSettings, GameboySettings, ThemeFilter } from "@/types";
 import {
   RefreshCw,
   Timer,
@@ -19,6 +20,7 @@ import { cn } from "@/lib/utils";
 type Props = {
   filter: ThemeFilter;
   asciiSettings: AsciiSettings;
+  gameboySettings: GameboySettings;
   onCapture: (dataUrl: string) => void;
   onStripComplete?: (dataUrl: string, frameId: string) => void;
 };
@@ -30,6 +32,7 @@ const ASCII_FRAME_INTERVAL = 1000 / 18;
 export default function CameraView({
   filter,
   asciiSettings,
+  gameboySettings,
   onCapture,
   onStripComplete,
 }: Props) {
@@ -50,9 +53,10 @@ export default function CameraView({
 
   const filterCSS = filterToCSS(filter);
   const mirrored = facingMode === "user";
+  const effectActive = asciiSettings.enabled || gameboySettings.enabled;
 
   useEffect(() => {
-    if (!asciiSettings.enabled) {
+    if (!effectActive) {
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
       return;
     }
@@ -74,14 +78,18 @@ export default function CameraView({
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
       }
-      renderAsciiFrame(video, canvas, sampleCanvas, asciiSettings, mirrored);
+      if (asciiSettings.enabled) {
+        renderAsciiFrame(video, canvas, sampleCanvas, asciiSettings, mirrored);
+      } else {
+        renderGameboyFrame(video, canvas, sampleCanvas, gameboySettings, mirrored);
+      }
     };
 
     rafRef.current = requestAnimationFrame(loop);
     return () => {
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     };
-  }, [asciiSettings, mirrored]);
+  }, [asciiSettings, gameboySettings, effectActive, mirrored]);
 
   useEffect(() => {
     let mounted = true;
@@ -109,7 +117,7 @@ export default function CameraView({
 
   /** Capture a frame with the theme filter baked into the pixels. */
   const captureFrame = useCallback((): string | null => {
-    if (asciiSettings.enabled && asciiCanvasRef.current) {
+    if (effectActive && asciiCanvasRef.current) {
       return asciiCanvasRef.current.toDataURL("image/jpeg", 0.92);
     }
     const video = webcamRef.current?.video;
@@ -128,7 +136,7 @@ export default function CameraView({
     }
     ctx.drawImage(video, 0, 0);
     return canvas.toDataURL("image/jpeg", 0.92);
-  }, [asciiSettings.enabled, filterCSS, mirrored]);
+  }, [effectActive, filterCSS, mirrored]);
 
   const finishStrip = useCallback(
     (shots: string[]) => {
@@ -234,12 +242,12 @@ export default function CameraView({
         mirrored={mirrored}
         className={cn(
           "absolute inset-0 w-full h-full object-cover",
-          asciiSettings.enabled && "opacity-0"
+          effectActive && "opacity-0"
         )}
-        style={{ filter: asciiSettings.enabled ? "none" : filterCSS || "none" }}
+        style={{ filter: effectActive ? "none" : filterCSS || "none" }}
       />
 
-      {asciiSettings.enabled && (
+      {effectActive && (
         <canvas
           ref={asciiCanvasRef}
           className="absolute inset-0 w-full h-full object-cover"
@@ -325,21 +333,21 @@ export default function CameraView({
           {/* full-screen flash */}
           <div className="absolute inset-0 bg-white pointer-events-none [animation:reveal-screen-flash_0.5s_ease-out_0.5s_both]" />
           <div className="scale-[0.5] sm:scale-[0.65] lg:scale-[0.85] origin-center">
-            <div className="relative w-[365px] h-[600px] [animation:reveal-pop_0.35s_ease-out_both]">
+            <div className="relative w-[365px] h-[516px] [animation:reveal-pop_0.35s_ease-out_both]">
               {/* camera body — drop your export at public/camera.png */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/camera.png"
                 alt=""
-                className="absolute left-0 top-0 w-[365px] h-[387px] z-10 select-none pointer-events-none"
+                className="absolute left-0 top-0 w-[365px] h-auto z-10 select-none pointer-events-none"
                 draggable={false}
               />
               {/* flashpoint blink + glow (Figma "Flashpoint" 292,117) */}
-              <div className="absolute left-[292px] top-[117px] w-[11px] h-[10px] bg-white z-20 [animation:reveal-flash-blink_0.5s_ease-out_0.5s_both]" />
-              <div className="absolute left-[262px] top-[87px] w-[70px] h-[70px] rounded-full bg-white blur-xl z-20 [animation:reveal-flash-blink_0.5s_ease-out_0.5s_both]" />
+              <div className="absolute left-[292px] top-[33px] w-[11px] h-[10px] bg-white z-20 [animation:reveal-flash-blink_0.5s_ease-out_0.5s_both]" />
+              <div className="absolute left-[262px] top-[3px] w-[70px] h-[70px] rounded-full bg-white blur-xl z-20 [animation:reveal-flash-blink_0.5s_ease-out_0.5s_both]" />
               {/* the real strip ejects below the slot in 3D perspective (Figma 29:384) */}
               <div
-                className="absolute left-[31px] top-[335px] w-[301px] z-20"
+                className="absolute left-[31px] top-[251px] w-[301px] z-20"
                 style={{
                   perspective: "700px",
                   // clip only the top edge (hides the not-yet-ejected part);
