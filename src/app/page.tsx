@@ -54,17 +54,17 @@ export default function Home() {
           <Tabs defaultValue="themes" className="flex flex-col h-full min-h-0">
             <TabsList
               variant="line"
-              className="w-full rounded-none border-b border-border justify-start px-3 h-11 bg-transparent gap-0 overflow-x-auto"
+              className="w-full rounded-none border-b-[0.8px] border-[rgba(255,255,255,0.08)] justify-start px-[12px] pt-[6px] pb-[0.8px] h-auto group-data-horizontal/tabs:h-auto bg-transparent gap-0 overflow-x-auto"
             >
               <TabsTrigger
                 value="themes"
-                className="text-[13px] px-2 h-full rounded-none font-medium"
+                className="flex-1 h-[36px]! rounded-t-[8px]! rounded-b-none! text-[13px] font-medium text-[#636363]! hover:text-[#ebebeb]! data-active:text-[#ebebeb]! data-active:bg-[rgba(255,255,255,0.1)]! data-active:border-transparent! after:bg-[#ebebeb]! after:bottom-[-0.8px]! after:h-[2px]! px-[8.8px]"
               >
                 Themes
               </TabsTrigger>
               <TabsTrigger
                 value="ascii"
-                className="text-[13px] px-3.5 h-full rounded-none font-medium gap-1"
+                className="flex-1 h-[36px]! rounded-t-[8px]! rounded-b-none! text-[13px] font-medium text-[#636363]! hover:text-[#ebebeb]! data-active:text-[#ebebeb]! data-active:bg-[rgba(255,255,255,0.1)]! data-active:border-transparent! after:bg-[#ebebeb]! after:bottom-[-0.8px]! after:h-[2px]! px-[14.8px] gap-1.5"
               >
                 ASCII
                 {asciiSettings.enabled && (
@@ -73,17 +73,17 @@ export default function Home() {
               </TabsTrigger>
               <TabsTrigger
                 value="favourites"
-                className="text-[13px] px-2 h-full rounded-none font-medium"
+                className="flex-1 h-[36px]! rounded-t-[8px]! rounded-b-none! text-[13px] font-medium text-[#636363]! hover:text-[#ebebeb]! data-active:text-[#ebebeb]! data-active:bg-[rgba(255,255,255,0.1)]! data-active:border-transparent! after:bg-[#ebebeb]! after:bottom-[-0.8px]! after:h-[2px]! px-[8.8px]"
               >
                 Favourites
               </TabsTrigger>
               <TabsTrigger
                 value="gallery"
-                className="text-[13px] px-3.5 h-full rounded-none font-medium gap-1"
+                className="flex-1 h-[36px]! rounded-t-[8px]! rounded-b-none! text-[13px] font-medium text-[#636363]! hover:text-[#ebebeb]! data-active:text-[#ebebeb]! data-active:bg-[rgba(255,255,255,0.1)]! data-active:border-transparent! after:bg-[#ebebeb]! after:bottom-[-0.8px]! after:h-[2px]! px-[14.8px] gap-1.5"
               >
                 Gallery
                 {photos.length > 0 && (
-                  <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-semibold bg-primary/15 text-primary rounded-full">
+                  <span className="inline-flex items-center justify-center min-w-[15px] h-[15px] px-[4px] text-[10px] leading-[15px] font-semibold bg-[#fdfeff] text-[#2f2f2f] rounded-full">
                     {photos.length > 99 ? "99+" : photos.length}
                   </span>
                 )}
