@@ -18,7 +18,7 @@ type PhotoboothStore = {
 
   // Photos
   photos: CapturedPhoto[];
-  addPhoto: (dataUrl: string, themeId: string) => void;
+  addPhoto: (dataUrl: string, themeId: string, frameId?: string) => CapturedPhoto;
   removePhoto: (id: string) => void;
   clearPhotos: () => void;
 };
@@ -52,18 +52,17 @@ export const usePhotoboothStore = create<PhotoboothStore>()(
       // ─── Photos ────────────────────────────────────────────
       photos: [],
 
-      addPhoto: (dataUrl, themeId) =>
-        set((state) => ({
-          photos: [
-            {
-              id: crypto.randomUUID(),
-              dataUrl,
-              themeId,
-              capturedAt: new Date(),
-            },
-            ...state.photos,
-          ],
-        })),
+      addPhoto: (dataUrl, themeId, frameId) => {
+        const photo: CapturedPhoto = {
+          id: crypto.randomUUID(),
+          dataUrl,
+          themeId,
+          frameId,
+          capturedAt: new Date(),
+        };
+        set((state) => ({ photos: [photo, ...state.photos] }));
+        return photo;
+      },
 
       removePhoto: (id) =>
         set((state) => ({

@@ -20,7 +20,7 @@ type Props = {
   filter: ThemeFilter;
   asciiSettings: AsciiSettings;
   onCapture: (dataUrl: string) => void;
-  onStripComplete?: (dataUrl: string) => void;
+  onStripComplete?: (dataUrl: string, frameId: string) => void;
 };
 
 type CameraError = "permission_denied" | "no_camera" | "other";
@@ -136,7 +136,7 @@ export default function CameraView({
       setIsComposing(true);
       composeStrip(shots, frame)
         .then((dataUrl) => {
-          onStripComplete?.(dataUrl);
+          onStripComplete?.(dataUrl, frame.id);
           setStripShots([]);
         })
         .finally(() => setIsComposing(false));

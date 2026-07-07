@@ -1,26 +1,31 @@
 "use client";
 
+import { useState } from "react";
 import { usePhotoboothStore } from "@/store/usePhotoboothStore";
+import { CapturedPhoto } from "@/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CameraView from "@/components/camera/CameraView";
 import ThemeSelector from "@/components/themes/ThemeSelector";
 import AsciiPanel from "@/components/ascii/AsciiPanel";
 import PhotoGallery from "@/components/photobooth/PhotoGallery";
+import PhotoDetailDialog from "@/components/photobooth/PhotoDetailDialog";
 import { toast } from "sonner";
 
 export default function Home() {
   const { themes, activeThemeId, asciiSettings, addPhoto, photos } =
     usePhotoboothStore();
   const activeTheme = themes.find((t) => t.id === activeThemeId) ?? themes[0];
+  const [detailPhoto, setDetailPhoto] = useState<CapturedPhoto | null>(null);
 
   const handleCapture = (dataUrl: string) => {
     addPhoto(dataUrl, asciiSettings.enabled ? "ascii" : activeThemeId);
     toast.success("Photo captured!");
   };
 
-  const handleStripComplete = (dataUrl: string) => {
-    addPhoto(dataUrl, "strip");
+  const handleStripComplete = (dataUrl: string, frameId: string) => {
+    const photo = addPhoto(dataUrl, "strip", frameId);
     toast.success("Photo strip saved to gallery!");
+    setDetailPhoto(photo); // preview details right after composing
   };
 
   return (
@@ -101,12 +106,17 @@ export default function Home() {
                 <ThemeSelector showFavouritesOnly />
               </TabsContent>
               <TabsContent value="gallery" className="mt-0">
-                <PhotoGallery />
+                <PhotoGallery onPhotoClick={setDetailPhoto} />
               </TabsContent>
             </div>
           </Tabs>
         </aside>
       </main>
+
+      <PhotoDetailDialog
+        photo={detailPhoto}
+        onClose={() => setDetailPhoto(null)}
+      />
     </div>
   );
 }

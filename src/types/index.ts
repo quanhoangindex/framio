@@ -30,6 +30,7 @@ export type CapturedPhoto = {
   id: string;
   dataUrl: string;
   themeId: string;
+  frameId?: string; // strip frame preset id, set when themeId === "strip"
   capturedAt: Date;
 };
 

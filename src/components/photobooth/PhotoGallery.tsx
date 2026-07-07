@@ -1,10 +1,15 @@
 "use client";
 
 import { usePhotoboothStore } from "@/store/usePhotoboothStore";
+import { CapturedPhoto } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Download, Trash2, Images } from "lucide-react";
 
-export default function PhotoGallery() {
+type Props = {
+  onPhotoClick?: (photo: CapturedPhoto) => void;
+};
+
+export default function PhotoGallery({ onPhotoClick }: Props) {
   const { photos, removePhoto, clearPhotos } = usePhotoboothStore();
 
   const downloadPhoto = (dataUrl: string, id: string) => {
@@ -58,7 +63,8 @@ export default function PhotoGallery() {
         {photos.map((photo) => (
           <div
             key={photo.id}
-            className="relative group rounded-xl overflow-hidden bg-muted aspect-square border border-border"
+            onClick={() => onPhotoClick?.(photo)}
+            className="relative group rounded-xl overflow-hidden bg-muted aspect-square border border-border cursor-pointer"
           >
             <img
               src={photo.dataUrl}
@@ -73,14 +79,20 @@ export default function PhotoGallery() {
             {/* Hover overlay */}
             <div className="absolute inset-0 bg-black/55 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-2">
               <button
-                onClick={() => downloadPhoto(photo.dataUrl, photo.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  downloadPhoto(photo.dataUrl, photo.id);
+                }}
                 className="w-8 h-8 rounded-full bg-white/12 border border-white/15 backdrop-blur-sm text-white flex items-center justify-center hover:bg-white/22 active:scale-90 transition-all"
                 title="Download"
               >
                 <Download className="w-3.5 h-3.5" />
               </button>
               <button
-                onClick={() => removePhoto(photo.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  removePhoto(photo.id);
+                }}
                 className="w-8 h-8 rounded-full bg-white/12 border border-white/15 backdrop-blur-sm text-white flex items-center justify-center hover:bg-rose-500/50 active:scale-90 transition-all"
                 title="Delete"
               >
