@@ -21,9 +21,13 @@ export type StripFrame = {
   id: string;
   name: string;
   background: string; // frame color behind/around photos
-  titleColor: string;
-  metaColor: string; // date + small header marks
-  title: string;
+  titleColor: string; // fallback title text when logo image is missing
+  metaColor: string; // small header marks
+  dateColor: string; // footer date
+  title: string; // fallback when logoUrl fails to load
+  logoUrl: string; // per-theme Framio logo (header right)
+  caption: string; // footer script caption
+  captionColor: string;
 };
 
 export type CapturedPhoto = {

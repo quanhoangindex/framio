@@ -29,6 +29,31 @@ type CameraError = "permission_denied" | "no_camera" | "other";
 
 const ASCII_FRAME_INTERVAL = 1000 / 18;
 
+// ─── Sound effects ───────────────────────────────────────────
+// Fire-and-forget; autoplay rejections (no user gesture yet) are ignored.
+function playFlashSound() {
+  const a = new Audio("/sounds/flashsound.mp3");
+  a.play().catch(() => {});
+}
+
+// Print sound: play the 0.97s → 3.66s segment (≈2.69s, matches eject motion)
+const PRINT_SOUND_START = 0.97;
+const PRINT_SOUND_END = 3.66;
+export const PRINT_DURATION_S = PRINT_SOUND_END - PRINT_SOUND_START; // 2.69
+
+function playPrintSound() {
+  const a = new Audio("/sounds/printsound.mp3");
+  a.currentTime = PRINT_SOUND_START;
+  const stopAt = () => {
+    if (a.currentTime >= PRINT_SOUND_END) {
+      a.pause();
+      a.removeEventListener("timeupdate", stopAt);
+    }
+  };
+  a.addEventListener("timeupdate", stopAt);
+  a.play().catch(() => {});
+}
+
 export default function CameraView({
   filter,
   asciiSettings,
@@ -177,14 +202,21 @@ export default function CameraView({
     finishStrip,
   ]);
 
-  // Reveal animation: flash -> eject -> then deliver the strip (details dialog)
+  // Reveal animation: flash (0.5s) -> eject (0.95s, 2.69s long, synced to
+  // the print sound segment) -> deliver the strip (details dialog)
   useEffect(() => {
     if (!reveal) return;
-    const t = setTimeout(() => {
+    const flashT = setTimeout(playFlashSound, 500);
+    const printT = setTimeout(playPrintSound, 950);
+    const doneT = setTimeout(() => {
       onStripComplete?.(reveal.dataUrl, reveal.frameId);
       setReveal(null);
-    }, 3200);
-    return () => clearTimeout(t);
+    }, 4000);
+    return () => {
+      clearTimeout(flashT);
+      clearTimeout(printT);
+      clearTimeout(doneT);
+    };
   }, [reveal, onStripComplete]);
 
   const startCountdown = useCallback(() => {
@@ -359,7 +391,7 @@ export default function CameraView({
                 <img
                   src={reveal.dataUrl}
                   alt="Photo strip"
-                  className="w-full origin-top shadow-[0_24px_48px_rgba(0,0,0,0.55)] [animation:reveal-eject_1.6s_cubic-bezier(0.22,1,0.36,1)_0.95s_both]"
+                  className="w-full origin-top shadow-[0_24px_48px_rgba(0,0,0,0.55)] [animation:reveal-eject_2.69s_cubic-bezier(0.22,1,0.36,1)_0.95s_both]"
                 />
               </div>
             </div>

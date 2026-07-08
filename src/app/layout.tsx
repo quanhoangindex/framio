@@ -25,6 +25,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        {/* Freehand — strip caption font, drawn on canvas in composeStrip */}
+        <link
+          href="https://fonts.googleapis.com/css2?family=Freehand&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body
         className={`${inter.variable} ${geistMono.variable} antialiased`}
       >
