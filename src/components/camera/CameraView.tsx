@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useCallback, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Webcam from "react-webcam";
 import { filterToCSS } from "@/lib/themes";
 import { renderAsciiFrame } from "@/lib/ascii";
@@ -418,12 +419,14 @@ export default function CameraView({
                 </div>
             )}
 
-            {/* Strip reveal — instant camera prints the real strip (Figma 27:289) */}
-            {reveal && (
-                <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/75 [animation:reveal-fade-in_0.25s_ease-out_both]">
+            {/* Strip reveal — fullscreen portal, topmost layer (Figma 27:289) */}
+            {reveal &&
+                typeof document !== "undefined" &&
+                createPortal(
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 [animation:reveal-fade-in_0.25s_ease-out_both]">
                     {/* full-screen flash */}
                     <div className="absolute inset-0 bg-white pointer-events-none [animation:reveal-screen-flash_1s_ease-out_0.6s_both]" />
-                    <div className="scale-[0.5] sm:scale-[0.65] lg:scale-[0.85] origin-center">
+                    <div className="scale-[0.65] sm:scale-90 lg:scale-100 origin-center">
                         <div className="relative w-[365px] h-[516px] [animation:reveal-pop_0.35s_ease-out_both]">
                             {/* camera body — public/camera.png */}
                             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -454,7 +457,8 @@ export default function CameraView({
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
 
             {/* Countdown overlay — camera stays visible, soft vignette + animated number */}
