@@ -40,21 +40,21 @@ export default function PhotoGallery({ onPhotoClick }: Props) {
       {/* Actions */}
       <div className="flex justify-end gap-1.5">
         <Button
-          variant="outline"
+          variant="cta"
           size="sm"
           onClick={downloadAll}
-          className="h-7 text-xs gap-1.5 px-2.5"
+          className="h-7 text-[12.8px] gap-1.5 px-[11px]"
         >
-          <Download className="w-3 h-3" />
+          <Download className="w-3.5 h-3.5" />
           Download all
         </Button>
         <Button
-          variant="outline"
+          variant="quiet"
           size="sm"
           onClick={clearPhotos}
-          className="h-7 text-xs gap-1.5 px-2.5 text-destructive border-destructive/20 hover:bg-destructive/10 hover:text-destructive"
+          className="h-7 text-[12.8px] gap-1.5 px-[10.8px]"
         >
-          <Trash2 className="w-3 h-3" />
+          <Trash2 className="w-3.5 h-3.5" />
           Clear
         </Button>
       </div>

@@ -20,6 +20,11 @@ const buttonVariants = cva(
         destructive:
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
         link: "text-primary underline-offset-4 hover:underline",
+        // Framio primary CTA (Figma 52:545): teal gradient + inner glow
+        cta: "relative rounded-[9px] border-[rgba(228,228,228,0.5)] bg-[linear-gradient(90deg,#6791ad_0%,#009ba0_49.5%,#cdc174_100%)] text-[#fcfcfc] [text-shadow:0px_0px_2px_rgba(0,0,0,0.25)] shadow-[inset_0px_0px_6px_4px_rgba(218,218,218,0.3)] hover:brightness-110 active:brightness-95",
+        // Framio quiet/destructive-lite (Figma 21:61): near-invisible dark chip
+        quiet:
+          "rounded-[9px] border-[0.8px] border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.02)] text-[#ededed] hover:bg-[rgba(255,255,255,0.06)] active:bg-[rgba(255,255,255,0.04)]",
       },
       size: {
         default:

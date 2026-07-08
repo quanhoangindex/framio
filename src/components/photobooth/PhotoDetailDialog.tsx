@@ -94,15 +94,20 @@ export default function PhotoDetailDialog({ photo, onClose }: Props) {
 
         <DialogFooter>
           <Button
-            variant="outline"
+            variant="quiet"
             size="sm"
             onClick={remove}
-            className="gap-1.5 text-destructive border-destructive/20 hover:bg-destructive/10 hover:text-destructive"
+            className="gap-1.5 text-[12.8px] px-[10.8px]"
           >
             <Trash2 className="w-3.5 h-3.5" />
             Delete
           </Button>
-          <Button size="sm" onClick={download} className="gap-1.5">
+          <Button
+            variant="cta"
+            size="sm"
+            onClick={download}
+            className="gap-1.5 text-[12.8px] px-[11px]"
+          >
             <Download className="w-3.5 h-3.5" />
             Download
           </Button>
