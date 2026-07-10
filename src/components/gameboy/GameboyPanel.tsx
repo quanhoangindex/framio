@@ -16,8 +16,8 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-3">
-      <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+    <div className="flex flex-col gap-3 rounded-[18px] border-[0.8px] border-[rgba(255,255,255,0.08)] bg-[#070707] p-[12.8px]">
+      <span className="text-[11px] font-medium uppercase tracking-[0.275px] text-[#636363]">
         {title}
       </span>
       {children}
@@ -45,8 +45,8 @@ function SliderRow({
   return (
     <div className="flex flex-col gap-1.5">
       <div className="flex items-center justify-between">
-        <span className="text-xs text-foreground">{label}</span>
-        <span className="text-xs tabular-nums text-muted-foreground">
+        <span className="text-[12px] text-[#ebebeb]">{label}</span>
+        <span className="text-[12px] tabular-nums text-[#636363]">
           {value}
           {suffix}
         </span>
@@ -114,7 +114,7 @@ export default function GameboyPanel() {
               step={4}
               onChange={(resolution) => updateGameboySettings({ resolution })}
             />
-            <p className="text-[11px] leading-relaxed text-muted-foreground">
+            <p className="text-[11px] leading-relaxed text-[#636363]">
               160px is the authentic Game Boy resolution.
             </p>
           </Section>
@@ -128,8 +128,8 @@ export default function GameboyPanel() {
                   className={cn(
                     "flex items-center justify-between rounded-lg border px-2.5 py-2 transition-all",
                     s.paletteId === p.id
-                      ? "border-primary/50 bg-primary/8"
-                      : "border-border hover:border-border/80 hover:bg-muted/60"
+                      ? "border-[rgba(255,255,255,0.4)] bg-[rgba(255,255,255,0.06)]"
+                      : "border-[rgba(255,255,255,0.08)] bg-[#020202] hover:bg-[rgba(255,255,255,0.04)]"
                   )}
                 >
                   <span className="text-xs font-medium">{p.name}</span>
@@ -148,16 +148,16 @@ export default function GameboyPanel() {
           </Section>
 
           <Section title="Dithering">
-            <div className="grid grid-cols-3 gap-1.5 rounded-lg bg-muted p-[3px]">
+            <div className="grid grid-cols-3 rounded-[12px] bg-[#0d0d0d] p-[3px]">
               {DITHER_OPTIONS.map((opt) => (
                 <button
                   key={opt.id}
                   onClick={() => updateGameboySettings({ dither: opt.id })}
                   className={cn(
-                    "h-7 rounded-md text-xs font-medium transition-all",
+                    "h-7 rounded-[9px] text-[12px] font-medium transition-all",
                     s.dither === opt.id
-                      ? "bg-background text-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
+                      ? "bg-[#020202] text-[#ebebeb] shadow-[0px_1px_1.5px_rgba(0,0,0,0.1)]"
+                      : "text-[#636363] hover:text-[#ebebeb]"
                   )}
                 >
                   {opt.label}
@@ -182,7 +182,7 @@ export default function GameboyPanel() {
               onChange={(contrast) => updateGameboySettings({ contrast })}
             />
             <div className="flex items-center justify-between">
-              <span className="text-xs text-foreground">Invert</span>
+              <span className="text-[12px] text-[#ebebeb]">Invert</span>
               <Switch
                 checked={s.invert}
                 onCheckedChange={(invert) => updateGameboySettings({ invert })}
@@ -192,7 +192,7 @@ export default function GameboyPanel() {
 
           <button
             onClick={resetGameboySettings}
-            className="flex items-center justify-center gap-1.5 self-start px-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
+            className="flex items-center justify-center gap-1.5 self-start px-1 text-[12px] text-[#636363] transition-colors hover:text-[#ebebeb]"
           >
             <RotateCcw className="h-3 w-3" />
             Reset to defaults

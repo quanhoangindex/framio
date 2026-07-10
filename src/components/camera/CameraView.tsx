@@ -530,7 +530,7 @@ export default function CameraView({
                         aria-hidden>
                         <path
                             d="M 104 19.21 A 60 60 0 1 1 188.79 104 A 60 60 0 1 1 104 188.79 A 60 60 0 1 1 19.21 104 A 60 60 0 1 1 104 19.21 Z"
-                            fill="rgba(10,10,10,0.7)"
+                            fill="rgba(10,10,10,0.7)"  stroke="white" strokeOpacity="0.1" strokeWidth="1.5"
                         />
                     </svg>
 

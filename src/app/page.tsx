@@ -96,7 +96,7 @@ export default function Home() {
               >
                 ASCII
                 {asciiSettings.enabled && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundImage: "conic-gradient(from 90deg, #0095aa 0%, #41a9ab 11%, #908e96 23%, #de7280 34%, #e29a72 51%, #e5c264 67%, #73ac87 79%, #1d9ba1 88%, #0095aa 100%)" }} />
                 )}
               </TabsTrigger>
               <TabsTrigger
@@ -105,7 +105,7 @@ export default function Home() {
               >
                 GB
                 {gameboySettings.enabled && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundImage: "conic-gradient(from 90deg, #0095aa 0%, #41a9ab 11%, #908e96 23%, #de7280 34%, #e29a72 51%, #e5c264 67%, #73ac87 79%, #1d9ba1 88%, #0095aa 100%)" }} />
                 )}
               </TabsTrigger>
               <TabsTrigger

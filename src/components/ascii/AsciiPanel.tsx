@@ -26,11 +26,11 @@ function Section({
   return (
     <div
       className={cn(
-        "flex flex-col gap-3 rounded-xl border border-border bg-card p-3",
+        "flex flex-col gap-3 rounded-[18px] border-[0.8px] border-[rgba(255,255,255,0.08)] bg-[#070707] p-[12.8px]",
         className
       )}
     >
-      <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+      <span className="text-[11px] font-medium uppercase tracking-[0.275px] text-[#636363]">
         {title}
       </span>
       {children}
@@ -58,8 +58,8 @@ function SliderRow({
   return (
     <div className="flex flex-col gap-1.5">
       <div className="flex items-center justify-between">
-        <span className="text-xs text-foreground">{label}</span>
-        <span className="text-xs tabular-nums text-muted-foreground">
+        <span className="text-[12px] text-[#ebebeb]">{label}</span>
+        <span className="text-[12px] tabular-nums text-[#636363]">
           {value}
           {suffix}
         </span>
@@ -137,7 +137,7 @@ export default function AsciiPanel() {
                 if (charset) updateAsciiSettings({ charset });
               }}
             >
-              <SelectTrigger>
+              <SelectTrigger className="bg-[#020202] border-[rgba(255,255,255,0.08)] rounded-[12px]">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -164,7 +164,7 @@ export default function AsciiPanel() {
                   updateAsciiSettings({ customChars: e.target.value })
                 }
                 placeholder="Sparse → dense, e.g.  .:-=+*#%@"
-                className="h-8 w-full rounded-lg border border-border bg-background px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                className="h-8 w-full rounded-[12px] border-[0.8px] border-[rgba(255,255,255,0.08)] bg-[#020202] px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
               />
             )}
           </Section>
@@ -187,16 +187,16 @@ export default function AsciiPanel() {
           </Section>
 
           <Section title="Colors">
-            <div className="grid grid-cols-2 gap-1.5 rounded-lg bg-muted p-[3px]">
+            <div className="grid grid-cols-2 rounded-[12px] bg-[#0d0d0d] p-[3px]">
               {(["mono", "color"] as AsciiColorMode[]).map((mode) => (
                 <button
                   key={mode}
                   onClick={() => updateAsciiSettings({ colorMode: mode })}
                   className={cn(
-                    "h-7 rounded-md text-xs font-medium capitalize transition-all",
+                    "h-7 rounded-[9px] text-[12px] font-medium capitalize transition-all",
                     s.colorMode === mode
-                      ? "bg-background text-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
+                      ? "bg-[#020202] text-[#ebebeb] shadow-[0px_1px_1.5px_rgba(0,0,0,0.1)]"
+                      : "text-[#636363] hover:text-[#ebebeb]"
                   )}
                 >
                   {mode === "mono" ? "Mono" : "Colored"}
@@ -206,7 +206,7 @@ export default function AsciiPanel() {
 
             {s.colorMode === "mono" && (
               <div className="flex items-center gap-4">
-                <label className="flex flex-1 items-center justify-between text-xs text-foreground">
+                <label className="flex flex-1 items-center justify-between text-[12px] text-[#ebebeb]">
                   Text
                   <input
                     type="color"
@@ -214,10 +214,10 @@ export default function AsciiPanel() {
                     onChange={(e) =>
                       updateAsciiSettings({ textColor: e.target.value })
                     }
-                    className="h-6 w-9 cursor-pointer rounded-md border border-border bg-transparent p-0.5"
+                    className="h-6 w-9 cursor-pointer rounded-[9px] border-[0.8px] border-[rgba(255,255,255,0.08)] bg-transparent p-0.5"
                   />
                 </label>
-                <label className="flex flex-1 items-center justify-between text-xs text-foreground">
+                <label className="flex flex-1 items-center justify-between text-[12px] text-[#ebebeb]">
                   Background
                   <input
                     type="color"
@@ -225,14 +225,14 @@ export default function AsciiPanel() {
                     onChange={(e) =>
                       updateAsciiSettings({ backgroundColor: e.target.value })
                     }
-                    className="h-6 w-9 cursor-pointer rounded-md border border-border bg-transparent p-0.5"
+                    className="h-6 w-9 cursor-pointer rounded-[9px] border-[0.8px] border-[rgba(255,255,255,0.08)] bg-transparent p-0.5"
                   />
                 </label>
               </div>
             )}
 
             <div className="flex items-center justify-between">
-              <span className="text-xs text-foreground">Invert</span>
+              <span className="text-[12px] text-[#ebebeb]">Invert</span>
               <Switch
                 checked={s.invert}
                 onCheckedChange={(invert) => updateAsciiSettings({ invert })}
@@ -242,7 +242,7 @@ export default function AsciiPanel() {
 
           <button
             onClick={resetAsciiSettings}
-            className="flex items-center justify-center gap-1.5 self-start px-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
+            className="flex items-center justify-center gap-1.5 self-start px-1 text-[12px] text-[#636363] transition-colors hover:text-[#ebebeb]"
           >
             <RotateCcw className="h-3 w-3" />
             Reset to defaults
