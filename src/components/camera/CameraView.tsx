@@ -1,6 +1,12 @@
 "use client";
 
-import { useRef, useCallback, useEffect, useState } from "react";
+import {
+    useRef,
+    useCallback,
+    useEffect,
+    useState,
+    useSyncExternalStore,
+} from "react";
 import { createPortal } from "react-dom";
 import Webcam from "react-webcam";
 import { filterToCSS } from "@/lib/themes";
@@ -14,6 +20,7 @@ import {
     ShieldAlert,
     VideoOff,
     GalleryVertical,
+    Zap,
     X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -110,6 +117,15 @@ export default function CameraView({
         dataUrl: string;
         frameId: string;
     } | null>(null);
+
+    const [flashOn, setFlashOn] = useState(false);
+    const [screenFlash, setScreenFlash] = useState(false);
+    // SSR-safe client check: false during server render, true after mount
+    const mounted = useSyncExternalStore(
+        () => () => {},
+        () => true,
+        () => false
+    );
 
     const filterCSS = filterToCSS(filter);
     const mirrored = facingMode === "user";
@@ -236,7 +252,7 @@ export default function CameraView({
         [stripFrameId],
     );
 
-    const capture = useCallback(() => {
+    const performCapture = useCallback(() => {
         setIsCapturing(true);
         setTimeout(() => setIsCapturing(false), 200);
 
@@ -259,6 +275,20 @@ export default function CameraView({
         isComposing,
         finishStrip,
     ]);
+
+    // Screen-fill flash: webcams have no hardware flash, so the whole screen
+    // goes white to light the subject, then the frame is captured mid-flash.
+    const capture = useCallback(() => {
+        if (!flashOn) {
+            performCapture();
+            return;
+        }
+        setScreenFlash(true);
+        setTimeout(() => {
+            performCapture();
+            setTimeout(() => setScreenFlash(false), 180);
+        }, 300);
+    }, [flashOn, performCapture]);
 
     // Reveal animation: flash (0.5s) -> eject (0.95s, 2.69s long, synced to
     // the print sound segment) -> deliver the strip (details dialog)
@@ -421,7 +451,7 @@ export default function CameraView({
 
             {/* Strip reveal — fullscreen portal, topmost layer (Figma 27:289) */}
             {reveal &&
-                typeof document !== "undefined" &&
+                mounted &&
                 createPortal(
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 [animation:reveal-fade-in_0.25s_ease-out_both]">
                     {/* full-screen flash */}
@@ -488,23 +518,37 @@ export default function CameraView({
                 </div>
             )}
 
-            {/* Controls — glass pill */}
-            <div className="absolute bottom-5 inset-x-0 flex items-center justify-center">
-                <div className="flex items-center gap-4 px-5 py-3 rounded-2xl bg-black/25 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
-                    <button
-                        onClick={toggleCamera}
-                        className="w-9 h-9 rounded-full bg-white/10 border border-white/10 text-white flex items-center justify-center hover:bg-white/18 active:scale-90 transition-all"
-                        title="Flip camera">
-                        <RefreshCw className="w-3.5 h-3.5" />
-                    </button>
+            {/* Controls — clover cluster (Figma 88:180): strip / timer / flip / flash */}
+            <div className="absolute bottom-4 inset-x-0 flex items-end justify-center pointer-events-none">
+                <div className="relative w-[160px] h-[160px] pointer-events-auto">
+                    {/* clover body — one SVG path, union of the four lobes */}
+                    <svg
+                        className="absolute inset-0 pointer-events-none"
+                        viewBox="0 0 208 208"
+                        width="160"
+                        height="160"
+                        aria-hidden>
+                        <path
+                            d="M 104 19.21 A 60 60 0 1 1 188.79 104 A 60 60 0 1 1 104 188.79 A 60 60 0 1 1 19.21 104 A 60 60 0 1 1 104 19.21 Z"
+                            fill="rgba(10,10,10,0.7)"
+                        />
+                    </svg>
 
-                    <button
-                        onClick={capture}
-                        className="relative w-[58px] h-[58px] rounded-full bg-white hover:scale-105 active:scale-95 transition-transform shadow-[0_0_0_3px_rgba(255,255,255,0.2),0_4px_16px_rgba(0,0,0,0.4)]"
-                        title="Take photo">
-                        <span className="absolute inset-[5px] rounded-full bg-white border-[1.5px] border-black/8" />
-                    </button>
+                    {/* sparkle — negative-space star between the lobes (Figma "Subtract"),
+                        defined in the 160px space, centered exactly at (80,80) */}
+                    <svg
+                        className="absolute inset-0 pointer-events-none"
+                        viewBox="0 0 160 160"
+                        width="160"
+                        height="160"
+                        aria-hidden>
+                        <path
+                            d="M 80 20 A 60 60 0 0 0 140 80 A 60 60 0 0 0 80 140 A 60 60 0 0 0 20 80 A 60 60 0 0 0 80 20 Z"
+                            fill="rgba(255,255,255,0.14)"
+                        />
+                    </svg>
 
+                    {/* top-left: photo strip mode */}
                     <button
                         onClick={() => {
                             setStripMode((prev) => {
@@ -513,24 +557,66 @@ export default function CameraView({
                             });
                         }}
                         className={cn(
-                            "w-9 h-9 rounded-full border flex items-center justify-center active:scale-90 transition-all",
+                            "absolute left-[20px] top-[20px] w-[34px] h-[34px] rounded-full flex items-center justify-center transition-all active:scale-90",
                             stripMode
-                                ? "bg-white text-black border-white"
-                                : "bg-white/10 border-white/10 text-white hover:bg-white/18"
+                                ? "bg-white text-black shadow-[0_2px_10px_rgba(0,0,0,0.3)]"
+                                : "bg-[rgba(255,255,255,0.15)] border-[0.8px] border-[rgba(255,255,255,0.2)] text-white hover:bg-white/25"
                         )}
                         title="Photo strip mode (3 shots)">
-                        <GalleryVertical className="w-3.5 h-3.5" />
+                        <GalleryVertical className="w-4 h-4" />
                     </button>
 
+                    {/* top-right: 3s timer */}
                     <button
                         onClick={startCountdown}
                         disabled={countdown !== null}
-                        className="w-9 h-9 rounded-full bg-white/10 border border-white/10 text-white flex items-center justify-center hover:bg-white/18 active:scale-90 transition-all disabled:opacity-40 disabled:pointer-events-none"
+                        className="absolute right-[20px] top-[20px] w-[34px] h-[34px] rounded-full bg-[rgba(255,255,255,0.15)] border-[0.8px] border-[rgba(255,255,255,0.2)] text-white flex items-center justify-center hover:bg-white/25 active:scale-90 transition-all disabled:opacity-40 disabled:pointer-events-none"
                         title="3-second timer">
-                        <Timer className="w-3.5 h-3.5" />
+                        <Timer className="w-4 h-4" />
+                    </button>
+
+                    {/* bottom-left: flip camera */}
+                    <button
+                        onClick={toggleCamera}
+                        className="absolute left-[20px] bottom-[20px] w-[34px] h-[34px] rounded-full bg-[rgba(255,255,255,0.15)] border-[0.8px] border-[rgba(255,255,255,0.2)] text-white flex items-center justify-center hover:bg-white/25 active:scale-90 transition-all"
+                        title="Flip camera">
+                        <RefreshCw className="w-4 h-4" />
+                    </button>
+
+                    {/* bottom-right: screen-fill flash toggle */}
+                    <button
+                        onClick={() => setFlashOn((prev) => !prev)}
+                        className={cn(
+                            "absolute right-[20px] bottom-[20px] w-[34px] h-[34px] rounded-full flex items-center justify-center transition-all active:scale-90",
+                            flashOn
+                                ? "bg-white text-black shadow-[0_2px_10px_rgba(0,0,0,0.3)]"
+                                : "bg-[rgba(255,255,255,0.15)] border-[0.8px] border-[rgba(255,255,255,0.2)] text-white hover:bg-white/25"
+                        )}
+                        title={flashOn ? "Flash on (screen fill)" : "Flash off"}>
+                        <Zap className={cn("w-4 h-4", flashOn && "fill-current")} />
+                    </button>
+
+                    {/* center shutter (inset 27.88% -> 71px) */}
+                    <button
+                        onClick={capture}
+                        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[71px] h-[71px] rounded-full bg-white drop-shadow-[0px_6px_12px_rgba(0,0,0,0.35)] hover:scale-105 active:scale-95 transition-transform"
+                        title="Take photo">
+                        <span className="absolute inset-[5px] rounded-full bg-white border-[0.8px] border-[rgba(0,0,0,0.1)]" />
                     </button>
                 </div>
             </div>
+
+            {/* Screen-fill flash — fullscreen white burst, above everything */}
+            {mounted &&
+                createPortal(
+                    <div
+                        className={cn(
+                            "fixed inset-0 z-[200] bg-white pointer-events-none transition-opacity duration-150",
+                            screenFlash ? "opacity-100" : "opacity-0"
+                        )}
+                    />,
+                    document.body
+                )}
         </div>
     );
 }
