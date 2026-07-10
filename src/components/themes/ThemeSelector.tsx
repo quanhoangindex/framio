@@ -90,7 +90,7 @@ export default function ThemeSelector({ showFavouritesOnly = false }: Props) {
                                     "absolute top-1 right-1 w-7 h-7 rounded-full bg-[#282828] border border-[rgba(45,45,45,0.4)] flex items-center justify-center transition-all duration-150",
                                     theme.favourite
                                         ? "opacity-100 text-rose-400"
-                                        : "opacity-0 group-hover:opacity-100 text-white hover:text-rose-400",
+                                        : "opacity-0 group-hover:opacity-100 text-white hover:text-rose-400"
                                 )}
                                 title={
                                     theme.favourite
@@ -100,7 +100,7 @@ export default function ThemeSelector({ showFavouritesOnly = false }: Props) {
                                 <Heart
                                     className={cn(
                                         "w-4 h-4",
-                                        theme.favourite && "fill-current",
+                                        theme.favourite && "fill-current"
                                     )}
                                 />
                             </button>

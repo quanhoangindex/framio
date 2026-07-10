@@ -124,7 +124,7 @@ export default function CameraView({
     const mounted = useSyncExternalStore(
         () => () => {},
         () => true,
-        () => false
+        () => false,
     );
 
     const filterCSS = filterToCSS(filter);
@@ -453,43 +453,44 @@ export default function CameraView({
             {reveal &&
                 mounted &&
                 createPortal(
-                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 [animation:reveal-fade-in_0.25s_ease-out_both]">
-                    {/* full-screen flash */}
-                    <div className="absolute inset-0 bg-white pointer-events-none [animation:reveal-screen-flash_1s_ease-out_0.6s_both]" />
-                    <div className="scale-[0.65] sm:scale-90 lg:scale-100 origin-center">
-                        <div className="relative w-[365px] h-[516px] [animation:reveal-pop_0.35s_ease-out_both]">
-                            {/* camera body — public/camera.png */}
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                                src="/camera.png"
-                                alt=""
-                                className="absolute left-0 top-0 w-[365px] h-auto z-10 select-none pointer-events-none"
-                                draggable={false}
-                            />
-                            {/* flashpoint blink + glow */}
-                            <div className="absolute left-[292px] top-[33px] w-[11px] h-[10px] bg-white z-20 [animation:reveal-flash-blink_1s_ease-out_0.6s_both]" />
-                            <div className="absolute left-[262px] top-[3px] w-[70px] h-[70px] rounded-full bg-white blur-xl z-20 [animation:reveal-flash-blink_1s_ease-out_0.6s_both]" />
-                            {/* the real strip ejects below the slot in 3D perspective (Figma 29:384) */}
-                            <div
-                                className="absolute left-[31px] top-[251px] w-[301px] z-20"
-                                style={{
-                                    perspective: "700px",
-                                    // clip only the top edge (hides the not-yet-ejected part);
-                                    // sides/bottom stay open so the perspective flare isn't cut
-                                    clipPath: "inset(0px -300px -600px -300px)",
-                                }}>
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 [animation:reveal-fade-in_0.25s_ease-out_both]">
+                        {/* full-screen flash */}
+                        <div className="absolute inset-0 bg-white pointer-events-none [animation:reveal-screen-flash_1s_ease-out_0.6s_both]" />
+                        <div className="scale-[0.65] sm:scale-90 lg:scale-100 origin-center">
+                            <div className="relative w-[365px] h-[516px] [animation:reveal-pop_0.35s_ease-out_both]">
+                                {/* camera body — public/camera.png */}
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img
-                                    src={reveal.dataUrl}
-                                    alt="Photo strip"
-                                    className="w-full origin-top shadow-[0_24px_48px_rgba(0,0,0,0.55)] [animation:reveal-eject_2.69s_cubic-bezier(0.22,1,0.36,1)_1.6s_both]"
+                                    src="/camera.png"
+                                    alt=""
+                                    className="absolute left-0 top-0 w-[365px] h-auto z-10 select-none pointer-events-none"
+                                    draggable={false}
                                 />
+                                {/* flashpoint blink + glow */}
+                                <div className="absolute left-[292px] top-[33px] w-[11px] h-[10px] bg-white z-20 [animation:reveal-flash-blink_1s_ease-out_0.6s_both]" />
+                                <div className="absolute left-[262px] top-[3px] w-[70px] h-[70px] rounded-full bg-white blur-xl z-20 [animation:reveal-flash-blink_1s_ease-out_0.6s_both]" />
+                                {/* the real strip ejects below the slot in 3D perspective (Figma 29:384) */}
+                                <div
+                                    className="absolute left-[31px] top-[251px] w-[301px] z-20"
+                                    style={{
+                                        perspective: "700px",
+                                        // clip only the top edge (hides the not-yet-ejected part);
+                                        // sides/bottom stay open so the perspective flare isn't cut
+                                        clipPath:
+                                            "inset(0px -300px -600px -300px)",
+                                    }}>
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img
+                                        src={reveal.dataUrl}
+                                        alt="Photo strip"
+                                        className="w-full origin-top shadow-[0_24px_48px_rgba(0,0,0,0.55)] [animation:reveal-eject_2.69s_cubic-bezier(0.22,1,0.36,1)_1.6s_both]"
+                                    />
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>,
-                document.body
-            )}
+                    </div>,
+                    document.body,
+                )}
 
             {/* Countdown overlay — camera stays visible, soft vignette + animated number */}
             {countdown !== null && (
@@ -523,14 +524,17 @@ export default function CameraView({
                 <div className="relative w-[160px] h-[160px] pointer-events-auto">
                     {/* clover body — one SVG path, union of the four lobes */}
                     <svg
-                        className="absolute inset-0 pointer-events-none"
+                        className="absolute inset-0 pointer-events-none "
                         viewBox="0 0 208 208"
                         width="160"
                         height="160"
                         aria-hidden>
                         <path
                             d="M 104 19.21 A 60 60 0 1 1 188.79 104 A 60 60 0 1 1 104 188.79 A 60 60 0 1 1 19.21 104 A 60 60 0 1 1 104 19.21 Z"
-                            fill="rgba(10,10,10,0.7)"  stroke="white" strokeOpacity="0.1" strokeWidth="1.5"
+                            fill="rgba(10,10,10,0.7)"
+                            stroke="white"
+                            strokeOpacity="0.1"
+                            strokeWidth="1.5 "
                         />
                     </svg>
 
@@ -560,7 +564,7 @@ export default function CameraView({
                             "absolute left-[20px] top-[20px] w-[34px] h-[34px] rounded-full flex items-center justify-center transition-all active:scale-90",
                             stripMode
                                 ? "bg-white text-black shadow-[0_2px_10px_rgba(0,0,0,0.3)]"
-                                : "bg-[rgba(255,255,255,0.15)] border-[0.8px] border-[rgba(255,255,255,0.2)] text-white hover:bg-white/25"
+                                : "bg-[rgba(255,255,255,0.15)] border-[0.8px] border-[rgba(255,255,255,0.2)] text-white hover:bg-white/25",
                         )}
                         title="Photo strip mode (3 shots)">
                         <GalleryVertical className="w-4 h-4" />
@@ -590,10 +594,14 @@ export default function CameraView({
                             "absolute right-[20px] bottom-[20px] w-[34px] h-[34px] rounded-full flex items-center justify-center transition-all active:scale-90",
                             flashOn
                                 ? "bg-white text-black shadow-[0_2px_10px_rgba(0,0,0,0.3)]"
-                                : "bg-[rgba(255,255,255,0.15)] border-[0.8px] border-[rgba(255,255,255,0.2)] text-white hover:bg-white/25"
+                                : "bg-[rgba(255,255,255,0.15)] border-[0.8px] border-[rgba(255,255,255,0.2)] text-white hover:bg-white/25",
                         )}
-                        title={flashOn ? "Flash on (screen fill)" : "Flash off"}>
-                        <Zap className={cn("w-4 h-4", flashOn && "fill-current")} />
+                        title={
+                            flashOn ? "Flash on (screen fill)" : "Flash off"
+                        }>
+                        <Zap
+                            className={cn("w-4 h-4", flashOn && "fill-current")}
+                        />
                     </button>
 
                     {/* center shutter (inset 27.88% -> 71px) */}

@@ -197,3 +197,9 @@
   from { transform: rotateX(46deg) translateY(-104%); }
   to { transform: rotateX(46deg) translateY(-4%); }
 }
+
+/* Mobile bottom sheet */
+@keyframes sheet-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
