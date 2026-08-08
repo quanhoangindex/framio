@@ -72,9 +72,10 @@ Type: Short answer · Optional
 **Q8. How much do you want each of these?** (1 = don't care, 5 = need it)
 Type: Multiple choice grid · Required
 Rows:
-- Lots of filter looks (retro, film, moody…)
-- Photo strips with cute frames & captions
-- Weird effects nobody else has (ASCII art, Game Boy pixel cam)
+- Filters that make you look GOOD (film, soft, aesthetic)
+- Filters that make you look RIDICULOUS (thermal cam, CCTV, deep-fried, ASCII)
+- Meme captions on your strip (Impact text, "POV:", "nobody:")
+- Pose prompts that tell you what to do each shot ("act shocked", "villain mode")
 - Taking a booth session remotely with a friend on another phone
 - One tap turns my strip into a story-sized post
 Columns: 1 · 2 · 3 · 4 · 5
@@ -85,6 +86,14 @@ Type: Multiple choice · Required
 - I'd screen-record that and post it
 - Cute, but I probably wouldn't share it
 - Not really my thing
+
+---
+
+**Q9b. A friend sends you a photobooth strip. Which is funnier to receive?**
+Type: Multiple choice · Required
+- A cute, aesthetic one
+- An absolutely cursed one
+- Depends on the friend
 
 ---
 
