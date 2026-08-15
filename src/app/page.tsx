@@ -143,17 +143,16 @@ export default function Home() {
             onStripComplete={handleStripComplete}
           />
 
-          {/* Mobile: themes chip next to the camera control */}
+          {/* Mobile: round themes icon button, anchored to the bottom-left corner */}
           <button
             onClick={() => setSheetOpen(true)}
-            className="lg:hidden absolute left-7 bottom-[76px] flex items-center gap-1.5 h-9 px-3 rounded-full bg-[rgba(10,10,10,0.7)] border-[0.8px] border-[rgba(255,255,255,0.2)] text-[13px] font-medium text-[#ebebeb] backdrop-blur-xl active:scale-95 transition-all"
+            className="lg:hidden absolute left-6 bottom-6 w-11 h-11 rounded-full bg-[rgba(10,10,10,0.7)] border-[0.8px] border-[rgba(255,255,255,0.2)] text-[#ebebeb] backdrop-blur-xl flex items-center justify-center active:scale-90 transition-all"
             title="Themes & effects"
           >
-            <Palette className="w-3.5 h-3.5" />
-            Themes
+            <Palette className="w-4 h-4" />
             {effectActive && (
               <span
-                className="w-1.5 h-1.5 rounded-full"
+                className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full ring-2 ring-[rgba(10,10,10,0.7)]"
                 style={{ backgroundImage: CONIC_DOT }}
               />
             )}
